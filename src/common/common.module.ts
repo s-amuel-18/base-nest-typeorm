@@ -6,6 +6,7 @@ import { ResponseInterceptor } from './interceptors/response.interceptor';
 import { UserModule } from 'src/user/user.module';
 import { DatasourceService } from './services/datasource.service';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
+import { BaseService } from './services/base.service';
 
 @Module({
   providers: [

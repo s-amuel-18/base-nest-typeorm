@@ -41,9 +41,10 @@ import { StateService } from 'src/list/services/state.service';
 import { PassportService } from './passport.service';
 import { map } from 'rxjs/operators';
 import { addYears, format, subYears } from 'date-fns';
+import { BaseService } from 'src/common/services/base.service';
 
 @Injectable()
-export class UserService {
+export class UserService extends BaseService {
 	private readonly logger = new Logger('UserService');
 
 	constructor(
@@ -55,7 +56,9 @@ export class UserService {
 
 		@Inject(forwardRef(() => PassportService))
 		private readonly passportService: PassportService,
-	) {}
+	) {
+		super();
+	}
 
 	// * Creators
 	async signUp(signUpDto: SignUpDto): Promise<User> {
@@ -71,14 +74,13 @@ export class UserService {
 			await this.userRepository.save(newUser);
 			return await this.findOne(newUser.id);
 		} catch (error) {
-			this.logger.error(error);
-			throw new InternalServerErrorException();
+			this.handleException(error);
 		}
 	}
 
-	async create(user: User, createUserDto: CreateUserDto): Promise<User> {
-		await this.throwExceptionIfEmailExist(createUserDto.email);
-		await this.throwExceptionIfPhoneNumberExist(createUserDto.phoneNumber);
+	async create(user: User, createUserDto: CreateUserDto) /* : Promise<User> */ {
+		// await this.throwExceptionIfEmailExist(createUserDto.email);
+		// await this.throwExceptionIfPhoneNumberExist(createUserDto.phoneNumber);
 
 		try {
 			const roleId = user.isAdmin() ? createUserDto.roleId : clientRoleId;
@@ -90,8 +92,7 @@ export class UserService {
 			await this.userRepository.save(newUser);
 			return await this.findOne(newUser.id);
 		} catch (error) {
-			this.logger.error(error);
-			throw new InternalServerErrorException();
+			this.handleException(error);
 		}
 	}
 
@@ -275,8 +276,7 @@ export class UserService {
 
 			return await this.findOne(id);
 		} catch (error) {
-			this.logger.error(error);
-			throw new Error(error);
+			this.handleException(error);
 		}
 	}
 
@@ -290,8 +290,7 @@ export class UserService {
 		try {
 			await this.changePassword(user, changePasswordDto);
 		} catch (error) {
-			this.logger.error(error);
-			throw new InternalServerErrorException();
+			this.handleException(error);
 		}
 	}
 
@@ -385,8 +384,7 @@ export class UserService {
 
 			return xlsx.write(workbook, { bookType: 'xlsx', type: 'buffer' });
 		} catch (error) {
-			this.logger.error(error);
-			throw new Error(error);
+			this.handleException(error);
 		}
 	}
 
@@ -476,8 +474,7 @@ export class UserService {
 				});
 			}
 		} catch (error) {
-			this.logger.error(error);
-			throw new InternalServerErrorException();
+			this.handleException(error);
 		}
 	}
 }
