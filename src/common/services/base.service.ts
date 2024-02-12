@@ -1,10 +1,4 @@
-import {
-  HttpException,
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-} from '@nestjs/common';
-import { Observable, throwError } from 'rxjs';
+import { HttpException, Logger } from '@nestjs/common';
 
 export abstract class BaseService {
   protected handleException(error: Error | HttpException, data?: any) {
